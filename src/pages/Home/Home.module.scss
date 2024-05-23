@@ -34,4 +34,30 @@
       }
     }
   }
+  @media screen and (max-width: 768px) {
+    h1 {
+      font-size: 5vw;
+    }
+    label {
+      font-size: 3vw;
+    }
+    .difficulty {
+      button {
+        font-size: 2vw;
+      }
+    }
+  }
+  @media screen and (max-width: 480px) {
+    h1 {
+      font-size: 7vw;
+    }
+    label {
+      font-size: 4vw;
+    }
+    .difficulty {
+      button {
+        font-size: 3vw;
+      }
+    }
+  }
 }

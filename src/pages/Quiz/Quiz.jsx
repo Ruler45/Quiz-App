@@ -33,12 +33,20 @@ const Quiz = () => {
       return newAnswers;
     });
     setCurrentQuestion(questions[currentQuestionNo]);
+    setCurrentQuestion({
+      ...currentQuestion,
+      question: questions[currentQuestionNo].question
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'")
+        .replace(/&amp;/g, "&"),
+    });
     setOptions(
       [
         ...questions[currentQuestionNo].incorrect_answers,
         questions[currentQuestionNo].correct_answer,
       ].sort(),
     );
+    // setOptions(options.map((option) => option));
   }, [questions, navigate]);
 
   const handleNext = () => {
@@ -70,9 +78,13 @@ const Quiz = () => {
       <h1>Quiz</h1>
       <p className={styles.question}>{currentQuestion.question}</p>
       <div className={styles.option}>
-        {options.map((option, i) => {
+        {options.map((opt, i) => {
+          const option = opt
+            .replace(/&quot;/g, '"')
+            .replace(/&#039;/g, "'")
+            .replace(/&amp;/g, "&");
           return (
-            <div>
+            <div key={opt}>
               {i + 1}. {option}
             </div>
           );
@@ -86,9 +98,14 @@ const Quiz = () => {
           value={userAnswers[currentQuestionNo]}
         >
           <option value="">Choose an option</option>
-          {options.map((option) => {
+          {options.map((opt) => {
+            const option = opt
+              .replace(/&quot;/g, '"')
+              .replace(/&#039;/g, "'")
+              .replace(/&amp;/g, "&");
+
             return (
-              <option key={option} value={option}>
+              <option key={opt} value={option}>
                 {option}
               </option>
             );

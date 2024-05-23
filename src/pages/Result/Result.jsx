@@ -38,13 +38,25 @@ const Result = () => {
           {questions.map((question, index) => (
             <div className={styles.question} key={question.question}>
               <p className={styles.question_title}>
-                {index + 1}.{question.question}
+                {index + 1}.
+                {question.question
+                  .replace(/&quot;/g, '"')
+                  .replace(/&#039;/g, "'")
+                  .replace(/&amp;/g, "&")}
               </p>
               <p className={styles.question_answer}>
-                Correct answer: {question.correct_answer}
+                Correct answer:{" "}
+                {question.correct_answer
+                  .replace(/&quot;/g, '"')
+                  .replace(/&#039;/g, "'")
+                  .replace(/&amp;/g, "&")}
               </p>
               <p className={styles.question_answer}>
-                Your answer: {userAnswers[index]}
+                Your answer:{" "}
+                {userAnswers[index]
+                  .replace(/&quot;/g, '"')
+                  .replace(/&#039;/g, "'")
+                  .replace(/&amp;/g, "&")}
               </p>
             </div>
           ))}

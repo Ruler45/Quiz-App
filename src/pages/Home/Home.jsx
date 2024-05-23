@@ -19,7 +19,7 @@ const Home = () => {
 
   return (
     <div className={styles.main}>
-      <h1>Welcome to the Technical Quiz App</h1>
+      <h1>Welcome to the Quiz App</h1>
       <label htmlFor="difficulty">
         Please Select the level (default is easy) :
       </label>
