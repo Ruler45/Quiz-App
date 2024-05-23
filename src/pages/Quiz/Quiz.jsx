@@ -1,114 +1,104 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import QuizContext from "@/context/quizContext";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import styles from "./Quiz.module.scss";
 
 const Quiz = () => {
-  const { query } = useParams();
-  const difficulty = query.split("&")[0].split("=")[1];
-  const limit = query.split("&")[1].split("=")[1];
+  const { qNo } = useParams();
+  const navigate = useNavigate();
 
-  const [questions, setQuestions] = useState([]);
-  const [score, setScore] = useState(0);
-  const [showAnswer, setShowAnswer] = useState(false);
+  const {
+    questions,
+    currentQuestionNo,
+    setCurrentQuestionNo,
+    userAnswers,
+    setUserAnswers,
+    limit,
+  } = useContext(QuizContext);
+  const [currentQuestion, setCurrentQuestion] = useState({});
 
-  const answer = new Array(2).fill(null);
+  const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(
-        `https://opentdb.com/api.php?amount=${limit}&difficulty=${difficulty}`,
-      )
-      .then((res) => {
-        setQuestions(res.data.results);
-      })
-      .catch((err) => {
-        console.log("error:", err);
-      });
-  }, []);
-
-  const handleSelect = (e, i) => {
-    answer[i] = e.target.value;
-  };
-
-  const handleSubmit = () => {
-    setScore(0);
-    answer.forEach((item, i) => {
-      if (item === questions[i].correct_answer) {
-        setScore((prev) => prev + 1);
+    if (questions.length === 0) {
+      navigate("/");
+      window.location.reload();
+    }
+    setUserAnswers((prev) => {
+      const newAnswers = [...prev];
+      if (newAnswers.length < parseInt(qNo, limit + 1)) {
+        newAnswers.push("");
       }
+      return newAnswers;
     });
-    // setShowAnswer(true);
+    setCurrentQuestion(questions[currentQuestionNo]);
+    setOptions(
+      [
+        ...questions[currentQuestionNo].incorrect_answers,
+        questions[currentQuestionNo].correct_answer,
+      ].sort(),
+    );
+  }, [questions, navigate]);
+
+  const handleNext = () => {
+    if (parseInt(qNo, 10) >= limit) {
+      navigate(`/quiz/result`);
+      return;
+    }
+    setCurrentQuestionNo((prev) => prev + 1);
+    navigate(`/quiz/${parseInt(qNo, 10) + 1}`);
   };
+
+  const handlePrev = () => {
+    if (parseInt(qNo, 10) === 1) {
+      return;
+    }
+    setCurrentQuestionNo((prev) => prev - 1);
+    navigate(`/quiz/${parseInt(qNo, 10) - 1}`);
+  };
+
+  const handleSelect = (e) => {
+    // console.log(e.target.value);
+    const newAnswers = [...userAnswers];
+    newAnswers[currentQuestionNo] = e.target.value;
+    setUserAnswers(newAnswers);
+  };
+
   return (
-    <div className="w-[80vw] flex my-2  ">
-      <h1>Quiz Page</h1>
-      {questions.map((item, i) => {
-        const options = item.incorrect_answers.concat(item.correct_answer);
-        options.sort();
-        // console.log(options);
-        let result = item.question.replace(/&quot;/g, '"');
-        result = result.replace(/&#039;/g, "'");
-
-        return (
-          <div key={item.question}>
-            <h3>{result}</h3>
-
-            <select onChange={(e) => handleSelect(e, i)}>
-              <option>Choose an answer</option>
-              {options.map((option) => {
-                let optionResult = option.replace(/&quot;/g, '"');
-                optionResult = optionResult.replace(/&#039;/g, "'");
-                return <option key={option}>{optionResult}</option>;
-              })}
-            </select>
-          </div>
-        );
-      })}
-
-      <Dialog>
-        <DialogTrigger>
-          <Button onClick={handleSubmit}>Submit</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>You have Successfully compeleted the quiz</DialogTitle>
-          </DialogHeader>
-          <DialogDescription>
-            <p>
-              Your total score is : {score}/{limit}
-            </p>
-            <Button onClick={() => setShowAnswer(true)}>Show Answer</Button>
-            <Button onClick={() => window.location.reload()}>
-              Try another quiz
-            </Button>
-          </DialogDescription>
-        </DialogContent>
-      </Dialog>
-
-      {showAnswer && (
-        <div>
-          <h3>Correct Answers: </h3>
-          {questions.map((item) => {
-            let result = item.question.replace(/&quot;/g, '"');
-            result = result.replace(/&#039;/g, "'");
+    <div className={styles.Quiz}>
+      <h1>Quiz</h1>
+      <p className={styles.question}>{currentQuestion.question}</p>
+      <div className={styles.option}>
+        {options.map((option, i) => {
+          return (
+            <div>
+              {i + 1}. {option}
+            </div>
+          );
+        })}
+      </div>
+      <div>
+        <select
+          name="options"
+          id="options"
+          onChange={handleSelect}
+          value={userAnswers[currentQuestionNo]}
+        >
+          <option value="">Choose an option</option>
+          {options.map((option) => {
             return (
-              <div key={item.question}>
-                <h3>{result}</h3>
-                <p>{item.correct_answer}</p>
-              </div>
+              <option key={option} value={option}>
+                {option}
+              </option>
             );
           })}
-        </div>
-      )}
+        </select>
+      </div>
+      <div className={styles.buttonContainer}>
+        {currentQuestionNo > 0 && <Button onClick={handlePrev}>Prev</Button>}
+        <Button onClick={handleNext}>{qNo < limit ? "Next" : "Submit"}</Button>
+      </div>
     </div>
   );
 };

@@ -1,0 +1,66 @@
+.Quiz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 80vw;
+  margin: 0 auto;
+  padding: 2rem;
+  gap: 2rem;
+
+  h1 {
+    font-size: 3vw;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  .question {
+    font-size: 1.5vw;
+    font-weight: 500;
+  }
+  .option {
+    display: flex;
+    border: 1px solid #000;
+    padding: 1rem;
+    gap: 1rem;
+    font-size: 1.2vw;
+  }
+  select {
+    padding: 0.5rem;
+    font-size: 1.2vw;
+    border: #000 1px solid;
+    border-radius: 0.5rem;
+  }
+  .buttonContainer {
+    display: flex;
+    gap: 1rem;
+  }
+
+  @media screen and (max-width: 768px) {
+    h1 {
+      font-size: 5vw;
+    }
+    .question {
+      font-size: 3vw;
+    }
+    .option {
+      font-size: 2vw;
+    }
+    select {
+      font-size: 2vw;
+    }
+  }
+  @media screen and (max-width: 480px) {
+    h1 {
+      font-size: 7vw;
+    }
+    .question {
+      font-size: 4vw;
+    }
+    .option {
+      font-size: 3vw;
+    }
+    select {
+      font-size: 3vw;
+    }
+  }
+}

@@ -1,12 +1,14 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useState } from "react";
+import { useContext } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import styles from "./Home.module.scss";
+import QuizContext from "@/context/quizContext";
 
 const Home = () => {
   const levels = ["easy", "medium", "hard"];
-  const [limit, setLimit] = useState(5);
-  const [difficulty, setDifficulty] = useState(levels[0]);
+  const { limit, setLimit, difficulty, setDifficulty, startQuiz } =
+    useContext(QuizContext);
 
   const handleLimitChange = (e) => {
     setLimit(e.target.value);
@@ -15,17 +17,13 @@ const Home = () => {
     setDifficulty(level);
   };
 
-  const navigate = useNavigate();
-
-  const startQuiz = () => {
-    navigate(`/quiz/difficulty=${difficulty}&limit=${limit}`);
-  };
-
   return (
-    <div>
+    <div className={styles.main}>
       <h1>Welcome to the Technical Quiz App</h1>
-      <h3>Please Select the level (default is easy) :</h3>
-      <div>
+      <label htmlFor="difficulty">
+        Please Select the level (default is easy) :
+      </label>
+      <div className={styles.difficulty} id="difficulty">
         {levels.map((level) => (
           <Button
             key={level}
@@ -36,7 +34,7 @@ const Home = () => {
           </Button>
         ))}
       </div>
-      <div>
+      <div className={styles.limit}>
         <label htmlFor="limit">Total no of questions?</label>
         <Input
           type="number"
