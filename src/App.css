@@ -1,0 +1,13 @@
+.App {
+  text-align: center;
+  width: 80vw;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 0 auto;
+}
+@media screen and (max-width: 768px) {
+  .App {
+    width: 90vw;
+  }
+}
